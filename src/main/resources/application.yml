@@ -1,0 +1,55 @@
+#spring
+spring:
+  devtools:
+    restart:
+      enabled: true
+
+  # Mysql DATABASE CONFIG
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      datasource:
+        # 主数据库
+        master:
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8
+          initialSize: 10
+          minIdle: 10
+          maxActive: 40
+        # 从数据库 1
+        slave1:
+          username: root
+          password: root
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3307/test?useUnicode=true&characterEncoding=utf8
+          initialSize: 5
+          minIdle: 5
+          maxActive: 20
+# Sql Logger Config
+logging:
+  level:
+    com.cyneck.zero.sharding.sample: debug
+
+# sharding-jdbc
+sharding.jdbc:
+  data-sources:
+    ds_master:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/test?serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+      username: root
+      password: root
+    ds_slave_0:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3307/test?serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+      username: root
+      password: root
+  master-slave-rule:
+    name: ds_ms
+    master-data-source-name: ds_master
+    slave-data-source-names: ds_slave_0
+    load-balance-algorithm-type: round_robin
+  config:
+    props:
+      sql.show: true
